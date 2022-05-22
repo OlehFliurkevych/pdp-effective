@@ -1,4 +1,4 @@
-package com.fliurkevych;
+package com.fliurkevych.task1;
 
 import java.util.List;
 

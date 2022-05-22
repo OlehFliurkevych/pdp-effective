@@ -1,6 +1,6 @@
-package com.fliurkevych;
+package com.fliurkevych.task1;
 
-import static com.fliurkevych.PdpEffectiveUtils.getCacheServiceByCacheType;
+import static com.fliurkevych.task1.PdpEffectiveUtils.getCacheServiceByCacheType;
 
 import java.util.List;
 import java.util.Scanner;
@@ -8,7 +8,7 @@ import java.util.Scanner;
 /**
  * @author Oleh Fliurkevych
  */
-public class PdpEffectiveMain {
+public class PdpEffectiveTask1Main {
 
   private static final Scanner sc = new Scanner(System.in);
 

@@ -1,4 +1,4 @@
-package com.fliurkevych;
+package com.fliurkevych.task1;
 
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.RemovalListener;

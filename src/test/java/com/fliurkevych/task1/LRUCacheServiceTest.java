@@ -1,6 +1,6 @@
-package com.fliurkevych;
+package com.fliurkevych.task1;
 
-import static com.fliurkevych.TestUtils.NAME_1;
+import static com.fliurkevych.task1.TestUtils.NAME_1;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;

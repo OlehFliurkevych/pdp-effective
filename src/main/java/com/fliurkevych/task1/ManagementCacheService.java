@@ -1,8 +1,7 @@
-package com.fliurkevych;
+package com.fliurkevych.task1;
 
-import static com.fliurkevych.PdpEffectiveUtils.getRandomNumber;
+import static com.fliurkevych.task1.PdpEffectiveUtils.getRandomNumber;
 
-import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -8,7 +8,7 @@ import java.util.List;
 public class PdpEffectiveUtils {
 
   public static final int MAX_CACHE_SIZE = 100_000;
-  public static final long EXPIRE_AFTER_TIME_VALUE = 10;
+  public static final long EXPIRE_AFTER_TIME_VALUE = 5;
 
   public static BaseCacheService getCacheServiceByCacheType(List<AbstractCacheService> services,
     int cacheType) {

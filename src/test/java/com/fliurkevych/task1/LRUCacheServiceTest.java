@@ -12,12 +12,12 @@ import java.util.Random;
  * @author Oleh Fliurkevych
  */
 public class LRUCacheServiceTest {
-  
-  private LRUCacheService lruCacheService;
+
+  private LRUCacheService<Integer, User> lruCacheService;
 
   @BeforeEach
-  void init(){
-    lruCacheService = new LRUCacheService();
+  void init() {
+    lruCacheService = new LRUCacheService<>();
   }
 
   @Test
@@ -28,7 +28,7 @@ public class LRUCacheServiceTest {
 
   @Test
   public void getWhenExist() {
-    var key = lruCacheService.put(new User(NAME_1));
+    var key = lruCacheService.put(1, new User(NAME_1));
     User user = lruCacheService.get(key);
     Assertions.assertEquals(NAME_1, user.getName());
   }
@@ -39,7 +39,5 @@ public class LRUCacheServiceTest {
     User user = lruCacheService.get(random.nextInt());
     Assertions.assertNull(user);
   }
-  
-  
 
 }

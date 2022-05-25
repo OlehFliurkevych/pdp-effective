@@ -5,56 +5,44 @@ import static com.fliurkevych.task1.PdpEffectiveUtils.getRandomNumber;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Scanner;
-
 public class ManagementCacheService {
 
   private static final Logger LOG = LoggerFactory.getLogger(ManagementCacheService.class);
 
-  private final BaseCacheService baseCacheService;
-  private final Scanner sc;
+  private final AbstractCacheService cacheService;
+  private final InputService inputService;
 
-  public ManagementCacheService(BaseCacheService baseCacheService, Scanner sc) {
-    this.baseCacheService = baseCacheService;
-    this.sc = sc;
+  public ManagementCacheService(AbstractCacheService cacheService, InputService inputService) {
+    this.cacheService = cacheService;
+    this.inputService = inputService;
   }
 
   public void putNewElements() {
-    int countOfNewElements = getCountOfIterations();
+    int countOfNewElements = inputService.getCountOfIterations();
     for (int i = 0; i < countOfNewElements; i++) {
-      baseCacheService.put(new User("name" + i));
+      Integer key = cacheService.getCountOfElements().get() + 1;
+      cacheService.put(key, new User("name" + i));
     }
     LOG.info("Successfully put {} values ", countOfNewElements);
   }
 
   public void getElements() {
-    int countOfElements = getCountOfIterations();
-    int maxRangeOfRandomKey = getMaxRangeOfRandomKey();
+    int countOfElements = inputService.getCountOfIterations();
+    int maxRangeOfRandomKey = inputService.getMaxRangeOfRandomKey();
 
     for (int i = 0; i < countOfElements; i++) {
       int key = getRandomNumber(0, maxRangeOfRandomKey);
-      baseCacheService.get(key);
+      cacheService.get(key);
     }
     LOG.info("Get {} random items", countOfElements);
   }
 
   public void show() {
-    baseCacheService.showValues();
+    cacheService.showValues();
   }
 
   public void showStats() {
-    baseCacheService.showStats();
-  }
-
-
-  private int getCountOfIterations() {
-    System.out.println("Please enter count of iterations:");
-    return sc.nextInt();
-  }
-
-  private int getMaxRangeOfRandomKey() {
-    System.out.println("Please enter max range of random key:");
-    return sc.nextInt();
+    cacheService.showStats();
   }
 
 }

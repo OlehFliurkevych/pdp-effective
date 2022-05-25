@@ -8,13 +8,13 @@ import org.slf4j.LoggerFactory;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.TimeUnit;
 
-public class LRUCacheService extends AbstractCacheService {
+public class LRUCacheService<K, V> extends AbstractCacheService<K, V> {
 
   private static final Logger LOG = LoggerFactory.getLogger(LRUCacheService.class);
-  protected static ConcurrentMap<Integer, User> cache;
+  protected final ConcurrentMap<K, V> cache;
 
   public LRUCacheService(int cacheCapacity) {
-    final RemovalListener<Integer, User> CLOSER = removal -> {
+    final RemovalListener<K, V> CLOSER = removal -> {
       LOG.info("User with key {} is removed due to {}", removal.getKey(), removal.getCause());
       countEvictions.incrementAndGet();
     };
@@ -29,7 +29,7 @@ public class LRUCacheService extends AbstractCacheService {
   }
 
   @Override
-  public User get(Integer key) {
+  public V get(K key) {
     if (cache.containsKey(key)) {
       return cache.get(key);
     }
@@ -37,11 +37,11 @@ public class LRUCacheService extends AbstractCacheService {
   }
 
   @Override
-  public Integer put(User user) {
+  public K put(K key, V value) {
     long l1 = System.currentTimeMillis();
-    int key = countOfElements.incrementAndGet();
+    countOfElements.incrementAndGet();
     countOfLoads.incrementAndGet();
-    cache.put(key, user);
+    cache.put(key, value);
     long l2 = System.currentTimeMillis();
     totalTimeLoad = totalTimeLoad + (l2 - l1);
     return key;

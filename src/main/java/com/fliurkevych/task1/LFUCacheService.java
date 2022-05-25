@@ -7,10 +7,10 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
-public class LFUCacheService extends AbstractCacheService {
+public class LFUCacheService<K, V> extends AbstractCacheService<K, V> {
 
   private static final Logger LOG = LoggerFactory.getLogger(LFUCacheService.class);
-  private static final ConcurrentMap<Integer, CacheRecord> cache = new ConcurrentHashMap<>();
+  private final ConcurrentMap<K, CacheRecord<V>> cache = new ConcurrentHashMap<>();
   private final int initialCapacity;
 
   public LFUCacheService(int initialCapacity) {
@@ -22,12 +22,12 @@ public class LFUCacheService extends AbstractCacheService {
   }
 
   @Override
-  public User get(Integer key) {
+  public V get(K key) {
     if (cache.containsKey(key)) {
-      CacheRecord record = cache.get(key);
+      CacheRecord<V> record = cache.get(key);
       record.setFrequency(record.getFrequency() + 1);
       putOldRecordIntoCache(key, record);
-      return record.getUser();
+      return record.getValue();
     }
     return null;
   }
@@ -38,33 +38,33 @@ public class LFUCacheService extends AbstractCacheService {
   }
 
   @Override
-  public Integer put(User user) {
+  public K put(K key,V value) {
     if (!isFull()) {
-      CacheRecord cacheRecord = new CacheRecord(user);
-      return putNewRecordIntoCache(cacheRecord);
+      CacheRecord<V> cacheRecord = new CacheRecord<V>(value);
+      return putNewRecordIntoCache(key, cacheRecord);
     } else {
-      Integer keyToBeRemoved = getLFUKey();
+      K keyToBeRemoved = getLFUKey();
       cache.remove(keyToBeRemoved);
       LOG.info("User with key {} is removed", keyToBeRemoved);
       countEvictions.incrementAndGet();
 
-      CacheRecord cacheRecord = new CacheRecord(user);
-      return putNewRecordIntoCache(cacheRecord);
+      CacheRecord<V> cacheRecord = new CacheRecord<V>(value);
+      return putNewRecordIntoCache(key, cacheRecord);
     }
   }
 
   @Override
   public void showValues() {
-    cache.forEach((e1, e2) -> System.out.println("key = " + e1 + ", value = " + e2.getUser()));
+    cache.forEach((e1, e2) -> System.out.println("key = " + e1 + ", value = " + e2.getValue()));
   }
 
-  private Integer putNewRecordIntoCache(CacheRecord cacheRecord) {
-    int key = countOfElements.incrementAndGet();
+  private K putNewRecordIntoCache(K key, CacheRecord<V> cacheRecord) {
+    countOfElements.incrementAndGet();
     countOfLoads.incrementAndGet();
     return putOldRecordIntoCache(key, cacheRecord);
   }
 
-  private Integer putOldRecordIntoCache(Integer key, CacheRecord cacheRecord) {
+  private K putOldRecordIntoCache(K key, CacheRecord<V> cacheRecord) {
     long l1 = System.currentTimeMillis();
     cache.put(key, cacheRecord);
     long l2 = System.currentTimeMillis();
@@ -73,11 +73,11 @@ public class LFUCacheService extends AbstractCacheService {
     return key;
   }
 
-  private Integer getLFUKey() {
-    int key = 0;
+  private K getLFUKey() {
+    K key = null;
     int minFreq = Integer.MAX_VALUE;
 
-    for (Map.Entry<Integer, CacheRecord> entry : cache.entrySet()) {
+    for (Map.Entry<K, CacheRecord<V>> entry : cache.entrySet()) {
       if (minFreq > entry.getValue().getFrequency()) {
         key = entry.getKey();
         minFreq = entry.getValue().getFrequency();
@@ -91,18 +91,18 @@ public class LFUCacheService extends AbstractCacheService {
     return cache.size() == initialCapacity;
   }
 
-  static class CacheRecord {
+  static class CacheRecord<V> {
 
-    private final User user;
+    private final V value;
     private int frequency;
 
-    protected CacheRecord(User user) {
-      this.user = user;
+    protected CacheRecord(V value) {
+      this.value = value;
       this.frequency = 0;
     }
 
-    public User getUser() {
-      return user;
+    public V getValue() {
+      return value;
     }
 
     public int getFrequency() {

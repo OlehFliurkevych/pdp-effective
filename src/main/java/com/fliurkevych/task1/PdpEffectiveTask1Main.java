@@ -13,14 +13,18 @@ public class PdpEffectiveTask1Main {
   private static final Scanner sc = new Scanner(System.in);
 
   public static void main(String[] args) {
+    InputService inputService = new InputService(sc);
+
     int cacheType;
-    while ((cacheType = chooseCacheType()) > 0) {
-      var cacheServices = List.of(new LFUCacheService(), new LRUCacheService());
-      BaseCacheService cacheService = getCacheServiceByCacheType(cacheServices, cacheType);
-      ManagementCacheService managementCacheService = new ManagementCacheService(cacheService, sc);
+    while ((cacheType = inputService.chooseCacheType()) > 0) {
+      var cacheServices = List.of(new LFUCacheService<Integer, User>(),
+        new LRUCacheService<Integer, User>());
+      AbstractCacheService cacheService = getCacheServiceByCacheType(cacheServices, cacheType);
+      ManagementCacheService managementCacheService = new ManagementCacheService(cacheService,
+        inputService);
 
       int num;
-      while ((num = getStepNumber(cacheService.getCacheType())) > 0) {
+      while ((num = inputService.getStepNumber(cacheService.getCacheType())) > 0) {
         switch (num) {
           case 1:
             managementCacheService.putNewElements();
@@ -37,31 +41,6 @@ public class PdpEffectiveTask1Main {
         }
       }
     }
-  }
-
-  private static int chooseCacheType() {
-    System.out.println("\n____ Cache types ____");
-    System.out.println("1 - LFU cache (Simple Java)");
-    System.out.println("2 - LRU cache (Guava)");
-    System.out.println("(any negative number for exit)");
-    System.out.println("_____________________");
-    System.out.println("\nPlease choose cache type:");
-    return sc.nextInt();
-  }
-
-  private static int getStepNumber(CacheType cacheType) {
-    System.out.println("\n_____________________");
-    System.out.println("Using " + cacheType + " cache type");
-    System.out.println("_____________________");
-    System.out.println("\n___ Operations with cache ___");
-    System.out.println("1 - put new elements into cache");
-    System.out.println("2 - simulate get elements from cache");
-    System.out.println("3 - get statistics of cache");
-    System.out.println("4 - show elements of cache");
-    System.out.println("(any negative number for exit)");
-    System.out.println("_____________________");
-    System.out.println("Please choose operations:");
-    return sc.nextInt();
   }
 
 }

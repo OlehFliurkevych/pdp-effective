@@ -10,7 +10,8 @@ public class PdpEffectiveUtils {
   public static final int MAX_CACHE_SIZE = 100_000;
   public static final long EXPIRE_AFTER_TIME_VALUE = 5;
 
-  public static BaseCacheService getCacheServiceByCacheType(List<AbstractCacheService> services,
+  public static <K, V> AbstractCacheService<K, V> getCacheServiceByCacheType(
+    List<AbstractCacheService<K, V>> services,
     int cacheType) {
     return services.stream()
       .filter(baseCacheService ->
